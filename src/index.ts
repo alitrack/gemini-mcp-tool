@@ -253,6 +253,13 @@ server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptReques
 // Start the server
 async function main() {
   Logger.debug("init gemini-mcp-tool");
+  
+  // Log the default model
+  const defaultModel = process.env.GEMINI_MODEL || "gemini-2.5-pro"; // Use explicit string for simplicity or import MODELS.PRO
+  Logger.debug(`Using default model: ${defaultModel}`);
+
   const transport = new StdioServerTransport(); await server.connect(transport);
   Logger.debug("gemini-mcp-tool listening on stdio");
-} main().catch((error) => {Logger.error("Fatal error:", error); process.exit(1); }); 
+}
+main().catch((error) => { Logger.error("Fatal error:", error); process.exit(1); }); 
+

@@ -87,8 +87,12 @@ ${prompt_processed}
     prompt_processed = changeModeInstructions;
   }
   
+  const activeModel = model || process.env.GEMINI_MODEL;
   const args = [];
-  if (model) { args.push(CLI.FLAGS.MODEL, model); }
+  if (activeModel) {
+    Logger.debug(`Using model: ${activeModel}`);
+    args.push(CLI.FLAGS.MODEL, activeModel);
+  }
   if (sandbox) { args.push(CLI.FLAGS.SANDBOX); }
   
   // Ensure @ symbols work cross-platform by wrapping in quotes if needed
@@ -103,10 +107,11 @@ ${prompt_processed}
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     if (errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) && model !== MODELS.FLASH) {
-      Logger.warn(`${ERROR_MESSAGES.QUOTA_EXCEEDED}. Falling back to ${MODELS.FLASH}.`);
+      const fallbackModel = process.env.GEMINI_MODEL || MODELS.FLASH;
+      Logger.warn(`${ERROR_MESSAGES.QUOTA_EXCEEDED}. Falling back to ${fallbackModel}.`);
       await sendStatusMessage(STATUS_MESSAGES.FLASH_RETRY);
       const fallbackArgs = [];
-      fallbackArgs.push(CLI.FLAGS.MODEL, MODELS.FLASH);
+      fallbackArgs.push(CLI.FLAGS.MODEL, fallbackModel);
       if (sandbox) {
         fallbackArgs.push(CLI.FLAGS.SANDBOX);
       }

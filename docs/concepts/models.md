@@ -22,23 +22,35 @@ You need use natural language: "...using gemini flash"
 You can also append with '-m' or ask specifically with 
 ```
 
-### In Configuration
+### Set Default Model (via Environment Variable)
+
+You can set the `GEMINI_MODEL` environment variable to specify a default model for all requests.
+
+In your MCP client configuration, you can add an `env` block to your server configuration:
+
 ```json
 {
   "mcpServers": {
     "gemini-cli": {
       "command": "gemini-mcp",
       "env": {
-        "GEMINI_MODEL": "gemini-1.5-flash"
+        "GEMINI_MODEL": "gemini-3-flash-preview"
       }
     }
   }
 }
 ```
 
-### Per Request (Coming Soon)
+### Per-Request Override
+
+You can override the default model for a single request using the `--model` flag or by mentioning it in your natural language prompt.
+
+```bash
+/gemini-cli:analyze --model=gemini-2.5-pro @file.js quick review
 ```
-/gemini-cli:analyze --model=flash @file.js quick review
+
+```bash
+use gemini flash to review @file.js
 ```
 
 ## Model Comparison

@@ -1,12 +1,11 @@
-
 # Gemini MCP Tool
 
 <div align="center">
 
-[![GitHub Release](https://img.shields.io/github/v/release/jamubc/gemini-mcp-tool?logo=github&label=GitHub)](https://github.com/jamubc/gemini-mcp-tool/releases)
-[![npm version](https://img.shields.io/npm/v/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool)
-[![npm downloads](https://img.shields.io/npm/dt/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Release](https://img.shields.io/github/v/release/jamubc/gemini-mcp-tool?logo=github&label=GitHub)](https://github.com/jamubc/gemini-mcp-tool/releases) 
+[![npm version](https://img.shields.io/npm/v/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool) 
+[![npm downloads](https://img.shields.io/npm/dt/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool) 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT) 
 [![Open Source](https://img.shields.io/badge/Open%20Source-❤️-red.svg)](https://github.com/jamubc/gemini-mcp-tool)
 
 </div>
@@ -96,6 +95,26 @@ If you installed globally, use this configuration instead:
 }
 ```
 
+### Setting Default Model
+
+You can specify a default Gemini model to be used by setting the `GEMINI_MODEL` environment variable. This can be particularly useful when integrating with MCP clients that allow environment variable configuration for servers.
+
+Example for Claude Desktop config file:
+
+```json
+{
+  "mcpServers": {
+    "gemini-cli": {
+      "command": "npx",
+      "args": ["-y", "gemini-mcp-tool"],
+      "env": {
+        "GEMINI_MODEL": "gemini-3-flash-preview"
+      }
+    }
+  }
+}
+```
+
 **Configuration File Locations:**
 
 - **Claude Desktop**:
@@ -104,6 +123,23 @@ If you installed globally, use this configuration instead:
   - **Linux**: `~/.config/claude/claude_desktop_config.json`
 
 After updating the configuration, restart your terminal session.
+
+## Running via HTTP with Supergateway
+
+The `gemini-mcp-tool` communicates over standard input/output (stdio) by default. If your MCP client requires an HTTP interface, you can use `supergateway` to wrap the `gemini-mcp-tool` and expose it over HTTP.
+
+Make sure you are in the root directory of the `gemini-mcp-tool` project and then run the following command:
+
+```bash
+GEMINI_MODEL="gemini-3-flash-preview" npx -y supergateway \
+    --stdio "npm start" \
+    --outputTransport streamableHttp \
+    --port 8000
+```
+This command will:
+1. Set the `GEMINI_MODEL` environment variable for the `gemini-mcp-tool` subprocess.
+2. Launch `supergateway` which in turn launches `gemini-mcp-tool` via `npm start`.
+3. `supergateway` then exposes `gemini-mcp-tool`'s functionality over HTTP on port `8000`.
 
 ## Example Workflow
 
